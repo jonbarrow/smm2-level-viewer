@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+		<script>
+			(typeof module === 'object' ? (window.module = module, module = undefined) : null)
+		</script>
+		<script async defer src="./assets/objects/object.js"></script>
+		<script async defer src="./assets/objects/terrain.js"></script>
+		<script async defer src="./assets/objects/block.js"></script>
+		<script async defer src="./assets/js/ipc.js"></script>
+		<script>
+			(window.module ? module = window.module : null)
+		</script>
+		
+		<style>
+			html, body {
+				margin: 0 !important;
+				padding: 0 !important;
+			}
+			#container {
+				width: calc(100% - 10px);
+				height: calc(100% - 10px);
+				overflow: auto;
+				border: 1px solid;
+				position: absolute;
+				left: 50%;
+				transform: translateX(-50%);
+				margin-bottom: 10px;
+			}
+			canvas{
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Red = objects</h1>
+		<h1>Green = tiles</h1>
+		<h1>Cyan = Mario Start</h1>
+		<h1>Blue = End Goal</h1>
+		<h1 id="title"></h1>
+
+		<div id="container">
+			<canvas id="canvas" width="5000"></canvas>
+		</div>
+	</body>
+</html>

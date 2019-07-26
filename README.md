@@ -1,0 +1,1 @@
+A very barebones course viewer for SMM2
