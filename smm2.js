@@ -1,6 +1,7 @@
 const fs = require('fs');
-const keyTable = require('./keys');
 const crypto = require('crypto');
+const async = require('async');
+const keyTable = require('./keys');
 
 function decryptFile(input, keyTable, offset=0) {
 	let buffer = input;
@@ -131,7 +132,7 @@ function decodeCourse(courseBuffer) {
 		},
 		creation_id: headerBuffer.readUInt32LE(0x24),
 		upload_id: (headerBuffer.readUInt32LE(0x28) << 8) + headerBuffer.readUInt32LE(0x28 + 4),
-		game_style: headerBuffer.subarray(0xF1, 0xF1 + 2).toString(),
+		style: headerBuffer.subarray(0xF1, 0xF1 + 2).toString(),
 		title: headerBuffer.subarray(0xF4, 0xF4 + 64).toString('utf16le').split('\0').shift(),
 		description: headerBuffer.subarray(0x136, 0x136 + 150).toString('utf16le').split('\0').shift(),
 
@@ -169,18 +170,49 @@ function decodeCourse(courseBuffer) {
 		// Sound Effect data
 		sound_effects: [],
 
+		// Snake Block data
+		snake_blocks: [],
+
+		// Clear Pipe data
+		clear_pipes: [],
+
+		// Piranha Creeper data
+		piranha_creepers: [],
+
+		// Expanding Block data
+		expanding_blocks: [],
+
+		// Track data
+		tracks: [],
+
 		// Tile data
-		tiles: []
+		tiles: [],
+
+		// Rail data
+		rails: [],
+
+		// Icicle data
+		icicles: [],
 	};
 
 	const objectsBuffer = courseBuffer.subarray(0x248, 0x248 + (decoded.object_count * 0x20));
 	const soundEffectsBuffer = courseBuffer.subarray(0x14548, 0x14548 + (decoded.sound_effect_count * 0x4));
-	const tilesBuffer = courseBuffer.subarray(0x249a4, 0x249a4 + (decoded.tile_count * 0x4));
+	const snakeBlocksBuffer = courseBuffer.subarray(0x149F8, 0x149F8 + (decoded.snake_block_count * 0x3C4));
+	const clearPipesBuffer = courseBuffer.subarray(0x15CCC, 0x15CCC + (decoded.clear_pipe_count * 0x124));
+	const piranhaCreepersBuffer = courseBuffer.subarray(0x240EC, 0x240EC + (decoded.piranha_creeper_count * 0x54));
+	const expandingBlocksBuffer = courseBuffer.subarray(0x24434, 0x24434 + (decoded.expanding_block_count * 0x2C));
+	const tracksBuffer = courseBuffer.subarray(0x245EC, 0x245EC + (decoded.track_count * 0x2C));
+	const tilesBuffer = courseBuffer.subarray(0x247A4, 0x247A4 + (decoded.tile_count * 0x4));
+	const railsBuffer = courseBuffer.subarray(0x28624, 0x28624 + (decoded.rail_count * 0xC));
+	const iciclesBuffer = courseBuffer.subarray(0x2CC74, 0x2CC74 + (decoded.icicle_count * 0x4));
 
+	// Decode objects
 	for (let i = 0; i < decoded.object_count; i++) {
 		const objectData = objectsBuffer.subarray(i * 0x20, (i * 0x20) + 0x20);
 
 		decoded.objects.push({
+			style: decoded.style,
+			theme: decoded.theme,
 			position: {
 				// Positions are from the block center, in a 160x160 grid
 				x: (objectData.readUInt32LE() - 80) / 160,
@@ -200,8 +232,9 @@ function decodeCourse(courseBuffer) {
 		});
 	}
 
+	// Decode sound effects
 	for (let i = 0; i < decoded.sound_effect_count; i++) {
-		const soundEffectData = soundEffectsBuffer.subarray((i * 0x4), (i * 0x4) + 4);
+		const soundEffectData = soundEffectsBuffer.subarray((i * 0x4), (i * 0x4) + 0x4);
 
 		decoded.sound_effects.push({
 			id: soundEffectData.readUInt8(),
@@ -212,9 +245,26 @@ function decodeCourse(courseBuffer) {
 		});
 	}
 
+	// Decode snake blocks
+	for (let i = 0; i < decoded.snake_block_count; i++) {
+		const snakeBlocksData = snakeBlocksBuffer.subarray((i * 0x3C4), (i * 0x3C4) + 0x3C4);
+	}
+	
+	// Decode clear pipes
+	for (let i = 0; i < decoded.clear_pipe_count; i++) {}
 
+	// Decode piranha creepers
+	for (let i = 0; i < decoded.piranha_creeper_count; i++) {}
+
+	// Decode expanding blocks
+	for (let i = 0; i < decoded.expanding_block_count; i++) {}
+
+	// Decode tracks
+	for (let i = 0; i < decoded.track_count; i++) {}
+
+	// Decode tiles
 	for (let i = 0; i < decoded.tile_count; i++) {
-		const tileData = tilesBuffer.subarray((i * 0x4), (i * 0x4) + 4);
+		const tileData = tilesBuffer.subarray((i * 0x4), (i * 0x4) + 0x4);
 
 		decoded.tiles.push({
 			x: tileData.readUInt8(),
@@ -223,6 +273,12 @@ function decodeCourse(courseBuffer) {
 			background_object_id: tileData.readUInt8(0x3),
 		});
 	}
+
+	// Decode rails
+	for (let i = 0; i < decoded.rail_count; i++) {}
+
+	// Decode icicles
+	for (let i = 0; i < decoded.icicle_count; i++) {}
 	
 	return decoded;
 }
