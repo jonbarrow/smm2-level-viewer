@@ -1,6 +1,6 @@
 /* eslint-env browser */
 
-const Gizmo = require('./Gizmo');
+const Gizmo = require('./gizmo');
 
 class LavaLift extends Gizmo {
 	constructor(data) {
@@ -16,7 +16,7 @@ class LavaLift extends Gizmo {
 			this.data.scene.ctx.drawImage(
 				this.spriteImage,
 				this.data.position.x,
-				this.data.position.y,
+				(this.data.scene.canvas.height - this.data.position.y),
 				this.data.dimensions.width,
 				this.data.dimensions.height
 			);

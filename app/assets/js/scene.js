@@ -18,8 +18,9 @@ const PinkCoin = require('./objects/items/pinkcoin');
 const AngrySun = require('./objects/enemies/angrysun');
 
 class CourseViewer {
-	constructor(ctx) {
-		this.ctx = ctx;
+	constructor(canvas) {
+		this.canvas = canvas;
+		this.ctx = this.canvas.getContext('2d');
 	
 		this._reset();
 	}
