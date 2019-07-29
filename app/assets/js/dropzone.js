@@ -42,8 +42,6 @@ window.addEventListener('drop', event => {
 
 	dropzone.classList.add('hidden');
 
-	console.log(event.dataTransfer.files[0])
-
 	if (isSMM2Course(event)) {
 		uploadCourse(event.dataTransfer.files[0].path);
 	} else {
