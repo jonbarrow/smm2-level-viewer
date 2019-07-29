@@ -87,11 +87,17 @@ class CourseViewer {
 	}
 
 	_reset() {
-		this.ctx.scale(1, 1);
+		this._mouseClicked = false;
+		this.lastX = this.canvas.width / 2;
+		this.lastY = this.canvas.height / 2;
+		this.dragStart = null;
+
 		this.courseData = null;
 
 		this.objects = [];
 		this.tiles = [];
+
+		this.clear();
 	}
 
 	_loadObjects(callback) {
