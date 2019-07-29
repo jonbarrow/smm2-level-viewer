@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 const async = require('async');
 
 const Block = require('./objects/terrain/block');
@@ -21,11 +23,71 @@ class CourseViewer {
 	constructor(canvas) {
 		this.canvas = canvas;
 		this.ctx = this.canvas.getContext('2d');
+
+		this._minScaleLevel = 1;
+		this._maxScaleLevel = 10;
+		this._scaleLevel = 1;
+		this._scaleRate = 1.1;
+		this._canvasScaleRate = 15;
+
+		this._setupMouseControls();
 	
 		this._reset();
 	}
 
+	// With help from http://phrogz.net/tmp/canvas_zoom_to_cursor.html
+	_setupMouseControls() {
+		this._mouseClicked = false;
+		this.lastX = this.canvas.width / 2;
+		this.lastY = this.canvas.height / 2;
+		this.dragStart;
+
+		trackTransforms(this.ctx);
+
+		this.canvas.addEventListener('mousedown', event => {
+			this._mouseClicked = true;
+
+			this.lastX = event.offsetX || (event.pageX - this.canvas.offsetLeft);
+			this.lastY = event.offsetY || (event.pageY - this.canvas.offsetTop);
+			this.dragStart = this.ctx.transformedPoint(this.lastX, this.lastY);
+		});
+
+		this.canvas.addEventListener('mouseup', () => {
+			this._mouseClicked = false;
+		});
+
+		this.canvas.addEventListener('mousemove', event => {
+			this.lastX = event.offsetX || (event.pageX - this.canvas.offsetLeft);
+			this.lastY = event.offsetY || (event.pageY - this.canvas.offsetTop);
+
+			if (!this._mouseClicked) {
+				return;
+			}
+
+			const point = this.ctx.transformedPoint(this.lastX, this.lastY);
+			this.ctx.translate(point.x-this.dragStart.x, point.y-this.dragStart.y);
+
+			this.clear();
+			this.render();
+		});
+
+		this.canvas.addEventListener('mousewheel', event => {
+			const delta = event.wheelDelta ? event.wheelDelta / 40 : event.detail ? -event.detail : 0;
+
+			const point = this.ctx.transformedPoint(this.lastX, this.lastY);
+			const factor = Math.pow(this._scaleRate, delta);
+
+			this.ctx.translate(point.x, point.y);
+			this.ctx.scale(factor, factor);
+			this.ctx.translate(-point.x, -point.y);
+		
+			this.clear();
+			this.render();
+		});
+	}
+
 	_reset() {
+		this.ctx.scale(1, 1);
 		this.courseData = null;
 
 		this.objects = [];
@@ -114,6 +176,16 @@ class CourseViewer {
 		this._reset();
 
 		this.courseData = data;
+		this.canvas.height = (27) * this._canvasScaleRate;
+		this.canvas.width = ((this.courseData.goal_x + 95) / 10) * this._canvasScaleRate;
+		
+		
+		const point = this.ctx.transformedPoint(0, (this.canvas.height));
+		const factor = Math.pow(this._scaleRate, (3.75 * 10));
+
+		this.ctx.translate(point.x, point.y);
+		this.ctx.scale(factor, factor);
+		this.ctx.translate(-point.x, -point.y);
 
 		// allows us to keep `this` reference
 		async.parallel([
@@ -132,10 +204,33 @@ class CourseViewer {
 		});
 	}
 
-	render() {
+	clear() {
+		this.ctx.save();
+		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		this.ctx.restore();
+	}
+
+	async render() {
+		this.clear();
+
+		// So I can see the canvas dimensions
+		this.ctx.fillStyle = 'blue';
+		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+		//this.ctx.scale(10, 10);
+
+		for (const object of this.objects) {
+			if (!object.spriteLoaded) {
+				await object.loadSprite();
+			}
+		}
+		
 		for (const object of this.objects) {
 			object.draw();
 		}
+
+		//this.ctx.moveTo(0, 0);
+		//this.ctx.scale(10, 10);
 
 		// Add rest of render parts
 
@@ -144,17 +239,96 @@ class CourseViewer {
 		this.ctx.fillStyle = 'cyan';
 		this.ctx.fillRect(
 			5,
-			this.courseData.start_y,
+			(this.canvas.height - this.courseData.start_y),
 			1, 1
 		);
 
 		this.ctx.fillStyle = 'blue';
 		this.ctx.fillRect(
 			this.courseData.goal_x / 10,
-			this.courseData.goal_y,
+			(this.canvas.height - this.courseData.goal_y),
 			1, 1
 		);
 	}
 }
 
 module.exports = CourseViewer;
+
+function trackTransforms(ctx){
+	const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+	let svgMatrix = svg.createSVGMatrix();
+	const savedTransforms = [];
+
+	ctx.getTransform = () => svgMatrix;
+
+	const save = ctx.save;
+	ctx.save = () => {
+		savedTransforms.push(svgMatrix.translate(0, 0));
+
+		return save.call(ctx);
+	};
+
+	const restore = ctx.restore;
+	ctx.restore = () => {
+		svgMatrix = savedTransforms.pop();
+
+		return restore.call(ctx);
+	};
+
+	const scale = ctx.scale;
+	ctx.scale = (sx, sy) => {
+		svgMatrix = svgMatrix.scaleNonUniform(sx, sy);
+
+		return scale.call(ctx, sx, sy);
+	};
+
+	const rotate = ctx.rotate;
+	ctx.rotate = radians => {
+		svgMatrix = svgMatrix.rotate(radians*180/Math.PI);
+
+		return rotate.call(ctx, radians);
+	};
+
+	const translate = ctx.translate;
+	ctx.translate = (dx, dy) => {
+		svgMatrix = svgMatrix.translate(dx, dy);
+
+		return translate.call(ctx, dx, dy);
+	};
+
+	const transform = ctx.transform;
+	ctx.transform = (a, b, c, d, e, f) => {
+		const svgMatrix2 = svg.createSVGMatrix();
+
+		svgMatrix2.a = a;
+		svgMatrix2.b = b;
+		svgMatrix2.c = c;
+		svgMatrix2.d = d;
+		svgMatrix2.e = e;
+		svgMatrix2.f = f;
+
+		svgMatrix = svgMatrix.multiply(svgMatrix2);
+
+		return transform.call(ctx,a,b,c,d,e,f);
+	};
+
+	const setTransform = ctx.setTransform;
+	ctx.setTransform = (a, b, c, d, e, f) => {
+		svgMatrix.a = a;
+		svgMatrix.b = b;
+		svgMatrix.c = c;
+		svgMatrix.d = d;
+		svgMatrix.e = e;
+		svgMatrix.f = f;
+
+		return setTransform.call(ctx, a, b, c, d, e, f);
+	};
+
+	const svgPoint  = svg.createSVGPoint();
+	ctx.transformedPoint = (x, y) => {
+		svgPoint.x = x;
+		svgPoint.y = y;
+
+		return svgPoint.matrixTransform(svgMatrix.inverse());
+	};
+}

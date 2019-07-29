@@ -6,21 +6,34 @@ class Cloud extends Terrain {
 	constructor(data) {
 		super(data);
 
+		this.spriteLoaded = false;
 		this.spriteImage = new Image();
+		this.spriteImage.addEventListener('load', () => {
+			this.spriteLoaded = true;
+		});
 	}
 
-	async draw() {
-		this.spriteImage.src = `./assets/img/${this.data.style}/terrain/cloud_block.png`;
+	loadSprite() {
+		const self = this;
 
-		this.spriteImage.onload = () => {
-			this.data.scene.ctx.drawImage(
-				this.spriteImage,
-				this.data.position.x,
-				(this.data.scene.canvas.height - this.data.position.y),
-				this.data.dimensions.width,
-				this.data.dimensions.height
-			);
-		};
+		return new Promise(resolve => {
+			self.spriteImage.src = `./assets/img/${this.data.style}/terrain/cloud_block.png`;
+			this.spriteImage.addEventListener('load', () => {
+				this.spriteLoaded = true;
+				resolve();
+			});
+		});
+		
+	}
+
+	draw() {
+		this.data.scene.ctx.drawImage(
+			this.spriteImage,
+			this.data.position.x,
+			(this.data.scene.canvas.height - this.data.position.y),
+			this.data.dimensions.width,
+			this.data.dimensions.height
+		);
 	}
 }
 
