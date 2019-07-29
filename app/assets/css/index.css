@@ -1,0 +1,31 @@
+* {
+	margin: 0;
+	padding: 0;
+	user-select: none;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	font-family: 'RoomBold';
+	font-weight: bold;
+}
+
+#container {
+	width: calc(100% - 10px);
+	height: calc(50% - 10px);
+	overflow: hidden;
+	border: 1px solid;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	margin-bottom: 10px;
+}
+
+canvas {
+	display: block;
+}
+
+.hide {
+	display: none;
+}

@@ -5,38 +5,25 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+		<link rel="stylesheet" href="./assets/css/fonts.css">
+		<link rel="stylesheet" href="./assets/css/index.css">
+		<link rel="stylesheet" href="./assets/css/dropzone.css">
+
 		<script>
 			(typeof module === 'object' ? (window.module = module, module = undefined) : null)
 		</script>
 		<script async defer src="./assets/js/ipc.js"></script>
+		<script async defer src="./assets/js/dropzone.js"></script>
 		<script>
 			(window.module ? module = window.module : null)
 		</script>
-		
-		<style>
-			html, body {
-				margin: 0 !important;
-				padding: 0 !important;
-			}
-
-			#container {
-				width: calc(100% - 10px);
-				height: calc(50% - 10px);
-				overflow: hidden;
-				border: 1px solid;
-				position: absolute;
-				left: 50%;
-				transform: translateX(-50%);
-				margin-bottom: 10px;
-			}
-
-			canvas {
-				display: block;
-			}
-		</style>
 	</head>
 	<body>
 		<h1 id="title"></h1>
+
+		<div id="dropzone" class="hidden">
+			<h1>Load course</h1>
+		</div>
 
 		<div id="container">
 			<canvas id="canvas" width="5000"></canvas>

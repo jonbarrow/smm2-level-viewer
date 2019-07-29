@@ -7,6 +7,10 @@ const canvas = document.querySelector('canvas');
 
 const Viewer = new CourseViewer(canvas);
 
+function uploadCourse(path) {
+	ipcRenderer.send('upload-course', path);
+}
+
 (() => {
 	ipcRenderer.send('initialize');
 })();

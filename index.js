@@ -2,7 +2,6 @@ const {BrowserWindow, app, ipcMain} = require('electron');
 const path = require('path');
 const url = require('url');
 const smm2 = require('./smm2');
-const coursePath = './files/course_data_120.bcd'; // Super Mario Sunshine's Sand Bird
 
 let LOCAL_RESOURCES_ROOT;
 if (isDev()) {
@@ -56,7 +55,7 @@ ipcMain.on('initialize', async event => {
 	event.sender.send('initialized');
 });
 
-ipcMain.on('ready', event => {
+ipcMain.on('upload-course', (event, coursePath) => {
 	const decryptedCourse = smm2.decryptCourse(coursePath);
 	const decodedCourse = smm2.decodeCourse(decryptedCourse);
 
