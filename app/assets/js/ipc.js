@@ -17,7 +17,7 @@ ipcRenderer.on('initialized', () => {
 	ipcRenderer.send('ready');
 });
 
-ipcRenderer.on('decoded-course', (event, data) => {
+ipcRenderer.on('decoded-course', async (event, data) => {
 	if(canvasContainer.firstElementChild) {
 		canvasContainer.removeChild(canvasContainer.firstElementChild);
 	}
@@ -27,7 +27,7 @@ ipcRenderer.on('decoded-course', (event, data) => {
 	const canvas = document.createElement('canvas');
 	const Viewer = new CourseViewer(canvas);
 
-	Viewer.loadCourse(data);
+	await Viewer.loadCourse(data);
 	Viewer.render();
 
 	canvasContainer.appendChild(canvas);

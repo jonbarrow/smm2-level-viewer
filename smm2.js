@@ -152,7 +152,7 @@ function decodeCourse(courseBuffer) {
 			left: dataBuffer.readUInt32LE(0x10),
 			bottom: dataBuffer.readUInt32LE(0x14),
 		},
-		time: dataBuffer.readUInt32LE(0x18),
+		time_of_day: dataBuffer.readUInt32LE(0x18),
 		object_count: dataBuffer.readUInt32LE(0x1C),
 		sound_effect_count: dataBuffer.readUInt32LE(0x20),
 		snake_block_count: dataBuffer.readUInt32LE(0x24),

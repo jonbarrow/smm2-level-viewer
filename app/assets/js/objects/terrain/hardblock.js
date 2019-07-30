@@ -5,30 +5,18 @@ const Terrain = require('./terrain');
 class HardBlock extends Terrain {
 	constructor(data) {
 		super(data);
-
-		this.spriteLoaded = false;
-		this.spriteImage = new Image();
-		this.spriteImage.addEventListener('load', () => {
-			this.spriteLoaded = true;
-		});
-	}
-
-	loadSprite() {
-		const self = this;
-
-		return new Promise(resolve => {
-			self.spriteImage.src = `./assets/img/${this.data.style}/terrain/hard_block.png`;
-			this.spriteImage.addEventListener('load', () => {
-				this.spriteLoaded = true;
-				resolve();
-			});
-		});
 		
+		this.scene = this.data.scene;
+		this.spriteOffset = this.scene.spriteSheetOffsets.terrain.hard_block;
 	}
 
 	draw() {
 		this.data.scene.ctx.drawImage(
-			this.spriteImage,
+			this.scene.spriteSheet,
+			this.spriteOffset.x,
+			this.spriteOffset.y,
+			this.spriteOffset.width,
+			this.spriteOffset.height,
 			this.data.position.x,
 			(this.data.scene.canvas.height - this.data.position.y),
 			this.data.dimensions.width,

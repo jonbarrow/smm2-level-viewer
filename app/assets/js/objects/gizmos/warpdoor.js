@@ -5,34 +5,29 @@ const Gizmo = require('./gizmo');
 class WarpDoor extends Gizmo {
 	constructor(data) {
 		super(data);
-
-		this.spriteLoaded = false;
-		this.spriteImage = new Image();
-		this.spriteImage.addEventListener('load', () => {
-			this.spriteLoaded = true;
-		});
-	}
-
-	loadSprite() {
-		const self = this;
-
-		return new Promise(resolve => {
-			self.spriteImage.src = `./assets/img/${this.data.style}/gizmos/warp_door.png`;
-			this.spriteImage.addEventListener('load', () => {
-				this.spriteLoaded = true;
-				resolve();
-			});
-		});
 		
+		this.scene = this.data.scene;
+		this.spriteOffsets = this.scene.spriteSheetGizmoOffsets.warp_door;
 	}
 
 	draw() {
+		let offset = this.spriteOffsets.default;
+
+		if (this.data.flags & 0x40000) {
+			offset = this.spriteOffsets.p_switch;
+		} else if (this.data.flags & 0x80000) {
+			offset = this.spriteOffsets.key;
+		}
+
 		this.data.scene.ctx.drawImage(
-			this.spriteImage,
+			this.scene.spriteSheet,
+			offset.x,
+			offset.y,
+			offset.width,
+			offset.height,
 			this.data.position.x,
-			(this.data.scene.canvas.height - this.data.position.y),
-			this.data.dimensions.width,
-			this.data.dimensions.height
+			(this.data.scene.canvas.height - this.data.position.y) - 1, // set origin to bottom and not top
+			1, 2
 		);
 	}
 }

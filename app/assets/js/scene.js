@@ -19,10 +19,36 @@ const SteepSlope = require('./objects/terrain/steepslope');
 const PinkCoin = require('./objects/items/pinkcoin');
 const AngrySun = require('./objects/enemies/angrysun');
 
+const TIMES = [
+	'day',
+	'night'
+];
+
+const THEMES = [
+	'ground', 
+	'underground', 
+	'castle', 
+	'airship', 
+	'underwater', 
+	'ghost House', 
+	'snow', 
+	'desert', 
+	'sky', 
+	'forest'
+];
+
 class CourseViewer {
 	constructor(canvas) {
 		this.canvas = canvas;
 		this.ctx = this.canvas.getContext('2d');
+
+		this.ctx.imageSmoothingEnabled = false;
+
+		this.spriteSheet = new Image();
+		this.terrainSpriteSheet = new Image();
+		this.enemySpriteSheet = new Image();
+		this.objectSpriteSheet = new Image();
+		this.spriteSheetData;
 
 		this._minScaleLevel = 1;
 		this._maxScaleLevel = 10;
@@ -178,13 +204,24 @@ class CourseViewer {
 	_loadRails(callback) { callback(); }
 	_loadIcicles(callback) { callback(); }
 
-	loadCourse(data) {
+	async loadCourse(data) {
 		this._reset();
 
 		this.courseData = data;
 		this.canvas.height = (27) * this._canvasScaleRate;
 		this.canvas.width = ((this.courseData.goal_x + 95) / 10) * this._canvasScaleRate;
-		
+
+		this.spriteSheetData = require(`../sprites/${this.courseData.style}/data.json`);
+		this.spriteSheetOffsets = this.spriteSheetData[TIMES[this.courseData.time_of_day]][THEMES[this.courseData.theme]];
+		this.spriteSheetGizmoOffsets = this.spriteSheetData.gizmos;
+		this.spriteSheetEnemyOffsets = this.spriteSheetData.enemies;
+
+		await new Promise(resolve => {
+			this.spriteSheet.src = `./assets/sprites/${this.courseData.style}/spritesheet.png`;
+			this.spriteSheet.addEventListener('load', () => {
+				resolve();
+			});
+		});
 		
 		const point = this.ctx.transformedPoint(0, (this.canvas.height));
 		const factor = Math.pow(this._scaleRate, (3.75 * 10));
@@ -193,20 +230,23 @@ class CourseViewer {
 		this.ctx.scale(factor, factor);
 		this.ctx.translate(-point.x, -point.y);
 
-		// allows us to keep `this` reference
-		async.parallel([
-			callback => this._loadObjects(callback),
-			callback => this._loadSoundEffects(callback),
-			callback => this._loadSnakeBlocks(callback),
-			callback => this._loadClearPipes(callback),
-			callback => this._loadPiranhaCreepers(callback),
-			callback => this._loadExpandingBlocks(callback),
-			callback => this._loadTracks(callback),
-			callback => this._loadTiles(callback),
-			callback => this._loadRails(callback),
-			callback => this._loadIcicles(callback)
-		], () => {
-			console.log('Loaded all course parts');
+		await new Promise(resolve => {
+			// allows us to keep `this` reference
+			async.parallel([
+				callback => this._loadObjects(callback),
+				callback => this._loadSoundEffects(callback),
+				callback => this._loadSnakeBlocks(callback),
+				callback => this._loadClearPipes(callback),
+				callback => this._loadPiranhaCreepers(callback),
+				callback => this._loadExpandingBlocks(callback),
+				callback => this._loadTracks(callback),
+				callback => this._loadTiles(callback),
+				callback => this._loadRails(callback),
+				callback => this._loadIcicles(callback)
+			], () => {
+				console.log('Loaded all course parts');
+				resolve();
+			});
 		});
 	}
 
@@ -223,20 +263,13 @@ class CourseViewer {
 		// So I can see the canvas dimensions
 		this.ctx.fillStyle = 'blue';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-		//this.ctx.scale(10, 10);
+
 
 		for (const object of this.objects) {
-			if (!object.spriteLoaded) {
-				await object.loadSprite();
+			if (!object.loadSprite) {
+				object.draw();
 			}
 		}
-		
-		for (const object of this.objects) {
-			object.draw();
-		}
-
-		//this.ctx.moveTo(0, 0);
-		//this.ctx.scale(10, 10);
 
 		// Add rest of render parts
 

@@ -5,34 +5,21 @@ const Gizmo = require('./gizmo');
 class LavaLift extends Gizmo {
 	constructor(data) {
 		super(data);
-
-		this.spriteLoaded = false;
-		this.spriteImage = new Image();
-		this.spriteImage.addEventListener('load', () => {
-			this.spriteLoaded = true;
-		});
-	}
-
-	loadSprite() {
-		const self = this;
-
-		return new Promise(resolve => {
-			self.spriteImage.src = `./assets/img/${this.data.style}/gizmos/lava_lift.png`;
-			this.spriteImage.addEventListener('load', () => {
-				this.spriteLoaded = true;
-				resolve();
-			});
-		});
 		
+		this.scene = this.data.scene;
+		this.spriteOffsets = this.scene.spriteSheetGizmoOffsets.lava_lift.blue; // Default to blue for now
 	}
 
 	draw() {
 		this.data.scene.ctx.drawImage(
-			this.spriteImage,
+			this.scene.spriteSheet,
+			this.spriteOffsets.x,
+			this.spriteOffsets.y,
+			this.spriteOffsets.width,
+			this.spriteOffsets.height,
 			this.data.position.x,
 			(this.data.scene.canvas.height - this.data.position.y),
-			this.data.dimensions.width,
-			this.data.dimensions.height
+			1, 1
 		);
 	}
 }
