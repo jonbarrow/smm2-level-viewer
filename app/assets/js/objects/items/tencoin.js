@@ -7,7 +7,7 @@ class TenCoin extends MultiCoin {
 		super(data);
 		
 		this.scene = this.data.scene;
-		this.spriteOffset = this.scene.spriteSheetOffsets.items.ten_coin;
+		this.spriteOffset = this.scene.spriteSheetData.items.ten_coin;
 	}
 
 	draw() {
@@ -17,8 +17,8 @@ class TenCoin extends MultiCoin {
 			this.spriteOffset.y,
 			this.spriteOffset.width,
 			this.spriteOffset.height,
-			this.data.position.x,
-			(this.data.scene.canvas.height - this.data.position.y),
+			this.data.position.x - 0.5, // yeah
+			(this.data.scene.canvas.height - this.data.position.y) - 1,
 			this.data.dimensions.width,
 			this.data.dimensions.height
 		);

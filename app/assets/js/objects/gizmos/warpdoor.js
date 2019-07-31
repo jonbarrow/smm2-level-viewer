@@ -7,7 +7,8 @@ class WarpDoor extends Gizmo {
 		super(data);
 		
 		this.scene = this.data.scene;
-		this.spriteOffsets = this.scene.spriteSheetGizmoOffsets.warp_door;
+		this.spriteOffsets = this.scene.spriteSheetData.gizmos.warp_door;
+		this.drawPriority = 888;
 	}
 
 	draw() {

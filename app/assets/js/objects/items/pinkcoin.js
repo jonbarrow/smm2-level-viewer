@@ -2,19 +2,20 @@
 
 const Coin = require('./coin');
 
-class TenCoin extends Coin {
+class PinkCoin extends Coin {
 	constructor(data) {
 		super(data);
 		
 		this.scene = this.data.scene;
-		this.spriteOffset = this.scene.spriteSheetOffsets.items.pink_coin;
+		this.spriteSheetThemeOffset = this.scene.spriteSheetThemeOffset;
+		this.spriteOffset = this.scene.spriteSheetData.items.pink_coin;
 	}
 
 	draw() {
 		this.data.scene.ctx.drawImage(
 			this.scene.spriteSheet,
-			this.spriteOffset.x,
-			this.spriteOffset.y,
+			this.spriteSheetThemeOffset.x + this.spriteOffset.x,
+			this.spriteSheetThemeOffset.y + this.spriteOffset.y,
 			this.spriteOffset.width,
 			this.spriteOffset.height,
 			this.data.position.x,
@@ -25,4 +26,4 @@ class TenCoin extends Coin {
 	}
 }
 
-module.exports = TenCoin;
+module.exports = PinkCoin;

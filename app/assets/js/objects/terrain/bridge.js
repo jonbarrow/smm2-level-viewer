@@ -7,7 +7,8 @@ class Bridge extends Terrain {
 		super(data);
 		
 		this.scene = this.data.scene;
-		this.spriteOffsets = this.scene.spriteSheetOffsets.terrain.bridge;
+		this.spriteSheetThemeOffset = this.scene.spriteSheetThemeOffset;
+		this.spriteOffsets = this.scene.spriteSheetData.terrain.bridge;
 	}
 
 	draw() {
@@ -25,8 +26,8 @@ class Bridge extends Terrain {
 			// Draw the top
 			this.data.scene.ctx.drawImage(
 				this.scene.spriteSheet,
-				offset.x,
-				offset.y,
+				this.spriteSheetThemeOffset.x + offset.x,
+				this.spriteSheetThemeOffset.y + offset.y,
 				offset.width,
 				offset.height,
 				this.data.position.x + i,
@@ -37,8 +38,8 @@ class Bridge extends Terrain {
 			// Draw the bottom
 			this.data.scene.ctx.drawImage(
 				this.scene.spriteSheet,
-				this.spriteOffsets.bottom.x,
-				this.spriteOffsets.bottom.y,
+				this.spriteSheetThemeOffset.x + this.spriteOffsets.bottom.x,
+				this.spriteSheetThemeOffset.y + this.spriteOffsets.bottom.y,
 				this.spriteOffsets.bottom.width,
 				this.spriteOffsets.bottom.height,
 				this.data.position.x + i,

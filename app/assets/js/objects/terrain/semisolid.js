@@ -7,52 +7,71 @@ class SemisolidPlatform extends Terrain {
 		super(data);
 
 		this.scene = this.data.scene;
-		this.spriteOffsets = this.scene.spriteSheetOffsets.terrain.semi_solid;
+		this.spriteSheetThemeOffset = this.scene.spriteSheetThemeOffset;
+		this.spriteOffsets = this.scene.spriteSheetData.terrain.semi_solid;
+
+		// I actually have no idea how the draw priority for semisolids works
+		// This is just a guess, and it sometimes works fine
+		if (this.data.flags & 0x40000) {
+			this.spriteOffsets = this.spriteOffsets.version_2;
+			//this.drawPriority = 3;
+		} else if(this.data.flags & 0x80000) {
+			this.spriteOffsets = this.spriteOffsets.version_3;
+			//this.drawPriority = 2;
+		} else {
+			this.spriteOffsets =  this.spriteOffsets.default;
+			//this.drawPriority = 1;
+		}
 	}
 
 	draw() {
 		for (let x = 0; x < this.data.dimensions.width; x++) {
 			for (let y = 0; y < this.data.dimensions.height; y++) {
-				let type = this.spriteOffsets.default;
 				let offset;
-
-				if (this.data.flags & 0x40000) {
-					type = this.spriteOffsets.version_2;
-				} else if(this.data.flags & 0x80000) {
-					type = this.spriteOffsets.version_3;
-				}
 
 				// The "top" and "bottom" positions are "reversed" because HTML5 vanvas grid origin is opposite of SMM2 origin
 				if (x === 0) {
 					if (y === 0) {
-						offset = type.bottom_left;
+						offset =  this.spriteOffsets.bottom_left;
 					} else if (y === this.data.dimensions.height-1) {
-						offset = type.top_left;
+						offset =  this.spriteOffsets.top_left;
 					} else {
-						offset = type.left;
+						if (y % 2) {
+							offset =  this.spriteOffsets.left;
+						} else {
+							offset =  this.spriteOffsets.left_2;
+						}
 					}
 				} else if (x === this.data.dimensions.width-1) {
 					if (y === 0) {
-						offset = type.bottom_right;
+						offset =  this.spriteOffsets.bottom_right;
 					} else if (y === this.data.dimensions.height-1) {
-						offset = type.top_right;
+						offset =  this.spriteOffsets.top_right;
 					} else {
-						offset = type.right;
+						if (y % 2) {
+							offset =  this.spriteOffsets.right;
+						} else {
+							offset =  this.spriteOffsets.right_2;
+						}
 					}
 				} else {
 					if (y === 0) {
-						offset = type.bottom_middle;
+						offset =  this.spriteOffsets.bottom_middle;
 					} else if (y === this.data.dimensions.height-1) {
-						offset = type.top_middle;
+						offset =  this.spriteOffsets.top_middle;
 					} else {
-						offset = type.center;
+						if (y % 2) {
+							offset =  this.spriteOffsets.center;
+						} else {
+							offset =  this.spriteOffsets.center_2;
+						}
 					}
 				}
 				
 				this.data.scene.ctx.drawImage(
 					this.scene.spriteSheet,
-					offset.x,
-					offset.y,
+					this.spriteSheetThemeOffset.x + offset.x,
+					this.spriteSheetThemeOffset.y + offset.y,
 					offset.width,
 					offset.height,
 					this.data.position.x + x,

@@ -7,14 +7,15 @@ class Coin extends Item {
 		super(data);
 		
 		this.scene = this.data.scene;
-		this.spriteOffset = this.scene.spriteSheetOffsets.items.coin;
+		this.spriteSheetThemeOffset = this.scene.spriteSheetThemeOffset;
+		this.spriteOffset = this.scene.spriteSheetData.items.coin;
 	}
 
 	draw() {
 		this.data.scene.ctx.drawImage(
 			this.scene.spriteSheet,
-			this.spriteOffset.x,
-			this.spriteOffset.y,
+			this.spriteSheetThemeOffset.x + this.spriteOffset.x,
+			this.spriteSheetThemeOffset.y + this.spriteOffset.y,
 			this.spriteOffset.width,
 			this.spriteOffset.height,
 			this.data.position.x,

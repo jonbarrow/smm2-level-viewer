@@ -269,6 +269,7 @@ function decodeCourse(courseBuffer) {
 		decoded.tiles.push({
 			x: tileData.readUInt8(),
 			y: tileData.readUInt8(0x1),
+			//id: tileData.readUInt16LE(0x2),
 			id: tileData.readUInt8(0x2),
 			background_object_id: tileData.readUInt8(0x3),
 		});

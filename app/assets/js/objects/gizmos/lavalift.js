@@ -7,16 +7,17 @@ class LavaLift extends Gizmo {
 		super(data);
 		
 		this.scene = this.data.scene;
-		this.spriteOffsets = this.scene.spriteSheetGizmoOffsets.lava_lift.blue; // Default to blue for now
+		this.spriteOffsets = this.scene.spriteSheetData.gizmos.lava_lift;
+		this.spriteOffset = this.spriteOffsets.blue; // Default to blue for now
 	}
 
 	draw() {
 		this.data.scene.ctx.drawImage(
 			this.scene.spriteSheet,
-			this.spriteOffsets.x,
-			this.spriteOffsets.y,
-			this.spriteOffsets.width,
-			this.spriteOffsets.height,
+			this.spriteOffset.x,
+			this.spriteOffset.y,
+			this.spriteOffset.width,
+			this.spriteOffset.height,
 			this.data.position.x,
 			(this.data.scene.canvas.height - this.data.position.y),
 			1, 1

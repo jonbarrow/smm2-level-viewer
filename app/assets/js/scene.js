@@ -187,6 +187,12 @@ class CourseViewer {
 			}
 		}
 
+		// This can probably be cleaner
+		this.objects = this.objects
+			.sort((a, b) => (a.data.position.y-b.data.position.y))
+			.reverse()
+			.sort((a, b) => a.drawPriority-b.drawPriority);
+
 		callback();
 	}
 
@@ -198,6 +204,23 @@ class CourseViewer {
 	_loadTracks(callback) { callback(); }
 
 	_loadTiles(callback) {
+		/*
+		let seenTileIds = [];
+		let seenTilePositions = [];
+		for (const tile of this.courseData.tiles) {
+			if (!seenTileIds.includes(tile.id)) {
+				seenTileIds.push(tile.id);
+			}
+
+			if (!seenTilePositions.includes([tile.x, tile.y])) {
+				seenTilePositions.push([tile.x, tile.y]);
+			}
+		}
+
+		seenTileIds = seenTileIds.sort((a, b) => a-b);
+		console.log(seenTileIds);
+		console.log(seenTilePositions);
+		*/
 		callback();
 	}
 
@@ -211,10 +234,8 @@ class CourseViewer {
 		this.canvas.height = (27) * this._canvasScaleRate;
 		this.canvas.width = ((this.courseData.goal_x + 95) / 10) * this._canvasScaleRate;
 
-		this.spriteSheetData = require(`../sprites/${this.courseData.style}/data.json`);
-		this.spriteSheetOffsets = this.spriteSheetData[TIMES[this.courseData.time_of_day]][THEMES[this.courseData.theme]];
-		this.spriteSheetGizmoOffsets = this.spriteSheetData.gizmos;
-		this.spriteSheetEnemyOffsets = this.spriteSheetData.enemies;
+		this.spriteSheetData = require(`../sprites/${this.courseData.style}/sprite_offsets.json`);
+		this.spriteSheetThemeOffset = this.spriteSheetData.theme_chunk_offsets[TIMES[this.courseData.time_of_day]][THEMES[this.courseData.theme]];
 
 		await new Promise(resolve => {
 			this.spriteSheet.src = `./assets/sprites/${this.courseData.style}/spritesheet.png`;
@@ -288,6 +309,27 @@ class CourseViewer {
 			(this.canvas.height - this.courseData.goal_y),
 			1, 1
 		);
+
+		this.ctx.fillStyle = 'pink';
+		for (const tile of this.courseData.tiles) {
+			
+			this.ctx.fillRect(
+				tile.x,
+				(this.canvas.height - tile.y),
+				1, 1
+			);
+		}
+
+		this.ctx.font = '1px serif';
+		this.ctx.fillStyle = 'black';
+		for (const tile of this.courseData.tiles) {
+			this.ctx.fillText(
+				tile.id,
+				tile.x,
+				(this.canvas.height - tile.y) + 1,
+				1
+			);
+		}
 	}
 }
 

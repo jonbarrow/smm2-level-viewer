@@ -7,7 +7,7 @@ class LifeUpShroom extends Item {
 		super(data);
 		
 		this.scene = this.data.scene;
-		this.spriteOffset = this.scene.spriteSheetOffsets.items.life_up_shroom;
+		this.spriteOffset = this.scene.spriteSheetData.items.life_up_shroom;
 	}
 
 	draw() {
