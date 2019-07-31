@@ -24,26 +24,26 @@ class Bridge extends Terrain {
 			}
 
 			// Draw the top
-			this.data.scene.ctx.drawImage(
+			this.canvasContext.drawImage(
 				this.scene.spriteSheet,
 				this.spriteSheetThemeOffset.x + offset.x,
 				this.spriteSheetThemeOffset.y + offset.y,
 				offset.width,
 				offset.height,
 				this.data.position.x + i,
-				(this.data.scene.canvas.height - this.data.position.y) - 1,
+				(this.scene.canvas.height - this.data.position.y) - 1,
 				1, 1
 			);
 
 			// Draw the bottom
-			this.data.scene.ctx.drawImage(
+			this.canvasContext.drawImage(
 				this.scene.spriteSheet,
 				this.spriteSheetThemeOffset.x + this.spriteOffsets.bottom.x,
 				this.spriteSheetThemeOffset.y + this.spriteOffsets.bottom.y,
 				this.spriteOffsets.bottom.width,
 				this.spriteOffsets.bottom.height,
 				this.data.position.x + i,
-				(this.data.scene.canvas.height - this.data.position.y),
+				(this.scene.canvas.height - this.data.position.y),
 				1, 1
 			);
 		}

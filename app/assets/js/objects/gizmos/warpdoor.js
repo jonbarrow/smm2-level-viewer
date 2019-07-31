@@ -20,14 +20,14 @@ class WarpDoor extends Gizmo {
 			offset = this.spriteOffsets.key;
 		}
 
-		this.data.scene.ctx.drawImage(
+		this.canvasContext.drawImage(
 			this.scene.spriteSheet,
 			offset.x,
 			offset.y,
 			offset.width,
 			offset.height,
 			this.data.position.x,
-			(this.data.scene.canvas.height - this.data.position.y) - 1, // set origin to bottom and not top
+			(this.scene.canvas.height - this.data.position.y) - 1, // set origin to bottom and not top
 			1, 2
 		);
 	}

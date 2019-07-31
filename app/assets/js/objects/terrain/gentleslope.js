@@ -27,7 +27,7 @@ class GentleSlope extends Terrain {
 	}
 
 	draw() {
-		this.data.scene.ctx.drawImage(
+		this.canvasContext.drawImage(
 			this.spriteImage,
 			this.data.position.x,
 			(this.data.scene.canvas.height - this.data.position.y),

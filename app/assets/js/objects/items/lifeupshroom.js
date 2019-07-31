@@ -11,14 +11,14 @@ class LifeUpShroom extends Item {
 	}
 
 	draw() {
-		this.data.scene.ctx.drawImage(
+		this.canvasContext.drawImage(
 			this.scene.spriteSheet,
 			this.spriteOffset.x,
 			this.spriteOffset.y,
 			this.spriteOffset.width,
 			this.spriteOffset.height,
 			this.data.position.x,
-			(this.data.scene.canvas.height - this.data.position.y),
+			(this.scene.canvas.height - this.data.position.y),
 			this.data.dimensions.width,
 			this.data.dimensions.height
 		);

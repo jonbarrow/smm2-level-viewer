@@ -23,11 +23,10 @@ class AngrySun extends Enemy {
 				resolve();
 			});
 		});
-		
 	}
 
 	draw() {
-		this.data.scene.ctx.drawImage(
+		this.canvasContext.drawImage(
 			this.spriteImage,
 			this.data.position.x,
 			(this.data.scene.canvas.height - this.data.position.y),

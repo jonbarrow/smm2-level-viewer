@@ -27,10 +27,10 @@ class SteepSlope extends Terrain {
 	}
 
 	draw() {
-		this.data.scene.ctx.drawImage(
+		this.canvasContext.drawImage(
 			this.spriteImage,
 			this.data.position.x,
-			(this.data.scene.canvas.height - this.data.position.y),
+			(this.scene.canvas.height - this.data.position.y),
 			this.data.dimensions.width,
 			this.data.dimensions.height
 		);

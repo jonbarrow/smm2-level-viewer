@@ -68,14 +68,14 @@ class SemisolidPlatform extends Terrain {
 					}
 				}
 				
-				this.data.scene.ctx.drawImage(
+				this.canvasContext.drawImage(
 					this.scene.spriteSheet,
 					this.spriteSheetThemeOffset.x + offset.x,
 					this.spriteSheetThemeOffset.y + offset.y,
 					offset.width,
 					offset.height,
 					this.data.position.x + x,
-					(this.data.scene.canvas.height - this.data.position.y) - y,
+					(this.scene.canvas.height - this.data.position.y) - y,
 					1, 1
 				);
 			}

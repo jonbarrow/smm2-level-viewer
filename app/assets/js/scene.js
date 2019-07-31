@@ -19,6 +19,8 @@ const SteepSlope = require('./objects/terrain/steepslope');
 const PinkCoin = require('./objects/items/pinkcoin');
 const AngrySun = require('./objects/enemies/angrysun');
 
+const Tile = require('./tile');
+
 const TIMES = [
 	'day',
 	'night'
@@ -221,6 +223,12 @@ class CourseViewer {
 		console.log(seenTileIds);
 		console.log(seenTilePositions);
 		*/
+
+		for (const tile of this.courseData.tiles) {
+			tile.scene = this;
+			this.tiles.push(new Tile(tile));
+		}
+
 		callback();
 	}
 
@@ -292,6 +300,12 @@ class CourseViewer {
 			}
 		}
 
+		for (const tile of this.tiles) {
+			if (!tile.loadSprite) {
+				tile.draw();
+			}
+		}
+
 		// Add rest of render parts
 
 
@@ -309,27 +323,6 @@ class CourseViewer {
 			(this.canvas.height - this.courseData.goal_y),
 			1, 1
 		);
-
-		this.ctx.fillStyle = 'pink';
-		for (const tile of this.courseData.tiles) {
-			
-			this.ctx.fillRect(
-				tile.x,
-				(this.canvas.height - tile.y),
-				1, 1
-			);
-		}
-
-		this.ctx.font = '1px serif';
-		this.ctx.fillStyle = 'black';
-		for (const tile of this.courseData.tiles) {
-			this.ctx.fillText(
-				tile.id,
-				tile.x,
-				(this.canvas.height - tile.y) + 1,
-				1
-			);
-		}
 	}
 }
 

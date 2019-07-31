@@ -11,14 +11,14 @@ class TenCoin extends MultiCoin {
 	}
 
 	draw() {
-		this.data.scene.ctx.drawImage(
+		this.canvasContext.drawImage(
 			this.scene.spriteSheet,
 			this.spriteOffset.x,
 			this.spriteOffset.y,
 			this.spriteOffset.width,
 			this.spriteOffset.height,
 			this.data.position.x - 0.5, // yeah
-			(this.data.scene.canvas.height - this.data.position.y) - 1,
+			(this.scene.canvas.height - this.data.position.y) - 1,
 			this.data.dimensions.width,
 			this.data.dimensions.height
 		);
