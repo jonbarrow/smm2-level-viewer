@@ -1,6 +1,5 @@
 const fs = require('fs');
 const crypto = require('crypto');
-const async = require('async');
 const keyTable = require('./keys');
 
 function decryptFile(input, keyTable, offset=0) {
@@ -103,7 +102,7 @@ function decryptThumb(input, out) {
 
 function decodeCourse(courseBuffer) {
 	const headerBuffer = courseBuffer.subarray(0, 0x200);
-	const dataBuffer = courseBuffer.subarray(0x200, 0x248);
+	const dataBuffer = courseBuffer.subarray(0x200, 0x2DEE0);
 
 	const decoded = {
 		// header data
@@ -195,16 +194,16 @@ function decodeCourse(courseBuffer) {
 		icicles: [],
 	};
 
-	const objectsBuffer = courseBuffer.subarray(0x248, 0x248 + (decoded.object_count * 0x20));
-	const soundEffectsBuffer = courseBuffer.subarray(0x14548, 0x14548 + (decoded.sound_effect_count * 0x4));
-	const snakeBlocksBuffer = courseBuffer.subarray(0x149F8, 0x149F8 + (decoded.snake_block_count * 0x3C4));
-	const clearPipesBuffer = courseBuffer.subarray(0x15CCC, 0x15CCC + (decoded.clear_pipe_count * 0x124));
-	const piranhaCreepersBuffer = courseBuffer.subarray(0x240EC, 0x240EC + (decoded.piranha_creeper_count * 0x54));
-	const expandingBlocksBuffer = courseBuffer.subarray(0x24434, 0x24434 + (decoded.expanding_block_count * 0x2C));
-	const tracksBuffer = courseBuffer.subarray(0x245EC, 0x245EC + (decoded.track_count * 0x2C));
-	const tilesBuffer = courseBuffer.subarray(0x247A4, 0x247A4 + (decoded.tile_count * 0x4));
-	const railsBuffer = courseBuffer.subarray(0x28624, 0x28624 + (decoded.rail_count * 0xC));
-	const iciclesBuffer = courseBuffer.subarray(0x2CC74, 0x2CC74 + (decoded.icicle_count * 0x4));
+	const objectsBuffer = dataBuffer.subarray(0x48, 0x48 + (decoded.object_count * 0x20));
+	const soundEffectsBuffer = dataBuffer.subarray(0x14548, 0x14548 + (decoded.sound_effect_count * 0x4));
+	const snakeBlocksBuffer = dataBuffer.subarray(0x149F8, 0x149F8 + (decoded.snake_block_count * 0x3C4));
+	const clearPipesBuffer = dataBuffer.subarray(0x15CCC, 0x15CCC + (decoded.clear_pipe_count * 0x124));
+	const piranhaCreepersBuffer = dataBuffer.subarray(0x240EC, 0x240EC + (decoded.piranha_creeper_count * 0x54));
+	const expandingBlocksBuffer = dataBuffer.subarray(0x24434, 0x24434 + (decoded.expanding_block_count * 0x2C));
+	const tracksBuffer = dataBuffer.subarray(0x245EC, 0x245EC + (decoded.track_count * 0x2C));
+	const tilesBuffer = dataBuffer.subarray(0x247A4, 0x247A4 + (decoded.tile_count * 0x4));
+	const railsBuffer = dataBuffer.subarray(0x28624, 0x28624 + (decoded.rail_count * 0xC));
+	const iciclesBuffer = dataBuffer.subarray(0x2CC74, 0x2CC74 + (decoded.icicle_count * 0x4));
 
 	// Decode objects
 	for (let i = 0; i < decoded.object_count; i++) {
