@@ -20,6 +20,7 @@ const PinkCoin = require('./objects/items/pinkcoin');
 const AngrySun = require('./objects/enemies/angrysun');
 
 const Tile = require('./tile');
+const Rail = require('./rail');
 
 const TIMES = [
 	'day',
@@ -124,6 +125,7 @@ class CourseViewer {
 
 		this.objects = [];
 		this.tiles = [];
+		this.rails = [];
 
 		this.clear();
 	}
@@ -207,7 +209,7 @@ class CourseViewer {
 	_loadClearPipes(callback) { callback(); }
 	_loadPiranhaCreepers(callback) { callback(); }
 	_loadExpandingBlocks(callback) { callback(); }
-	_loadTracks(callback) { callback(); }
+	_loadTrackBlocks(callback) { callback(); }
 
 	_loadTiles(callback) {
 		for (const tile of this.courseData.tiles) {
@@ -218,7 +220,16 @@ class CourseViewer {
 		callback();
 	}
 
-	_loadRails(callback) { callback(); }
+	_loadRails(callback) {
+		for (const rail of this.courseData.rails) {
+			console.log(rail);
+			rail.scene = this;
+			this.rails.push(new Rail(rail));
+		}
+
+		callback();
+	}
+
 	_loadIcicles(callback) { callback(); }
 
 	async loadCourse(data) {
@@ -255,7 +266,7 @@ class CourseViewer {
 				callback => this._loadClearPipes(callback),
 				callback => this._loadPiranhaCreepers(callback),
 				callback => this._loadExpandingBlocks(callback),
-				callback => this._loadTracks(callback),
+				callback => this._loadTrackBlocks(callback),
 				callback => this._loadTiles(callback),
 				callback => this._loadRails(callback),
 				callback => this._loadIcicles(callback)
@@ -280,14 +291,11 @@ class CourseViewer {
 		this.ctx.fillStyle = 'blue';
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height + 1);
 
+		for (const rail of this.rails) {
+			rail.draw();
+		}
 
 		for (const object of this.objects) {
-			if (object.loadSprite) {
-				if (!object.spriteLoaded) {
-					await object.loadSprite();
-				}
-			}
-			
 			object.draw();
 		}
 

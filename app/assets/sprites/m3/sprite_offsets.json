@@ -662,6 +662,53 @@
 		}
 	},
 	"enemies": {
-		
+		"angry_sun": {
+			"x": 1,
+			"y": 3126,
+			"width": 32,
+			"height": 32
+		}
+	},
+	"rails": {
+		"flat": {
+			"left": {
+				"x": 1,
+				"y": 137,
+				"width": 16,
+				"height": 16
+			},
+			"right": {
+				"x": 18,
+				"y": 137,
+				"width": 16,
+				"height": 16
+			},
+			"center": {
+				"x": 1,
+				"y": 154,
+				"width": 16,
+				"height": 16
+			}
+		},
+		"down_right": {
+			"left": {
+				"x": 69,
+				"y": 137,
+				"width": 16,
+				"height": 16
+			},
+			"right": {
+				"x": 86,
+				"y": 137,
+				"width": 16,
+				"height": 16
+			},
+			"center": {
+				"x": 35,
+				"y": 103,
+				"width": 16,
+				"height": 16
+			}
+		}
 	}
 }

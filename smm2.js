@@ -275,7 +275,31 @@ function decodeCourse(courseBuffer) {
 	}
 
 	// Decode rails
-	for (let i = 0; i < decoded.rail_count; i++) {}
+	for (let i = 0; i < decoded.rail_count; i++) {
+		const railData = railsBuffer.subarray((i * 0xC), (i * 0xC) + 0xC);
+
+		decoded.rails.push({
+			has_object: !!(railData.readUInt8(0x2)),
+			x: railData.readUInt8(0x3),
+			y: railData.readUInt8(0x4),
+			type: railData.readUInt8(0x5),
+			index: railData.readUInt16LE(0x6), // index in the rail track
+			left: railData.readUInt8(0x8),
+			up: railData.readUInt8(0x9),
+			right: railData.readUInt8(0xA),
+			down: railData.readUInt8(0xB)
+		});
+
+		/*
+		decoded.rails.push({
+			has_object: !!(railData.readUInt8(0x2)),
+			x: railData.readUInt8(0x3),
+			y: railData.readUInt8(0x4),
+			unknown_1: railData.readUInt16LE(0x8) / 10,
+			unknown_2: railData.readUInt16LE(0xA) / 10
+		});
+		*/
+	}
 
 	// Decode icicles
 	for (let i = 0; i < decoded.icicle_count; i++) {}
