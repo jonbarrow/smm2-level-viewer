@@ -158,7 +158,7 @@ function decodeCourse(courseBuffer) {
 		clear_pipe_count: dataBuffer.readUInt32LE(0x28),
 		piranha_creeper_count: dataBuffer.readUInt32LE(0x2C),
 		expanding_block_count: dataBuffer.readUInt32LE(0x30),
-		track_count: dataBuffer.readUInt32LE(0x34),
+		track_block_count: dataBuffer.readUInt32LE(0x34),
 		tile_count: dataBuffer.readUInt32LE(0x3C),
 		rail_count: dataBuffer.readUInt32LE(0x40),
 		icicle_count: dataBuffer.readUInt32LE(0x44),
@@ -182,7 +182,7 @@ function decodeCourse(courseBuffer) {
 		expanding_blocks: [],
 
 		// Track data
-		tracks: [],
+		track_blocks: [],
 
 		// Tile data
 		tiles: [],
@@ -200,7 +200,7 @@ function decodeCourse(courseBuffer) {
 	const clearPipesBuffer = dataBuffer.subarray(0x15CCC, 0x15CCC + (decoded.clear_pipe_count * 0x124));
 	const piranhaCreepersBuffer = dataBuffer.subarray(0x240EC, 0x240EC + (decoded.piranha_creeper_count * 0x54));
 	const expandingBlocksBuffer = dataBuffer.subarray(0x24434, 0x24434 + (decoded.expanding_block_count * 0x2C));
-	const tracksBuffer = dataBuffer.subarray(0x245EC, 0x245EC + (decoded.track_count * 0x2C));
+	const trackBlocksBuffer = dataBuffer.subarray(0x245EC, 0x245EC + (decoded.track_block_count * 0x2C));
 	const tilesBuffer = dataBuffer.subarray(0x247A4, 0x247A4 + (decoded.tile_count * 0x4));
 	const railsBuffer = dataBuffer.subarray(0x28624, 0x28624 + (decoded.rail_count * 0xC));
 	const iciclesBuffer = dataBuffer.subarray(0x2CC74, 0x2CC74 + (decoded.icicle_count * 0x4));
