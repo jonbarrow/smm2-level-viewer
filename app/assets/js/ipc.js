@@ -22,8 +22,6 @@ ipcRenderer.on('decoded-course', async (event, data) => {
 		canvasContainer.removeChild(canvasContainer.firstElementChild);
 	}
 
-	document.getElementById('title').innerText = data.title;
-
 	const canvas = document.createElement('canvas');
 	const Viewer = new CourseViewer(canvas);
 

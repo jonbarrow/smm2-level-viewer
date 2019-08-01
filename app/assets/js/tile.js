@@ -34,7 +34,7 @@ class Tile {
 				1, 1
 			);
 	
-			this.canvasContext.font = '1px serif';
+			this.canvasContext.font = '1px RoomBold';
 			this.canvasContext.fillStyle = 'black';
 			this.canvasContext.fillText(
 				this.data.id,

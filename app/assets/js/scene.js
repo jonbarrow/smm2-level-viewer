@@ -5,7 +5,7 @@ const async = require('async');
 const Block = require('./objects/terrain/block');
 const HardBlock = require('./objects/terrain/hardblock');
 const Coin = require('./objects/items/coin');
-const SemisolidPlatform = require('./objects/terrain/semisolid');
+const SemisolidPlatform = require('./objects/terrain/semisolidplatform');
 const Bridge = require('./objects/terrain/bridge');
 const Donut = require('./objects/terrain/donut');
 const Cloud = require('./objects/terrain/cloud');
@@ -189,11 +189,15 @@ class CourseViewer {
 			}
 		}
 
-		// This can probably be cleaner
-		this.objects = this.objects
-			.sort((a, b) => (a.data.position.y-b.data.position.y))
-			.reverse()
-			.sort((a, b) => a.drawPriority-b.drawPriority);
+		this.objects = this.objects.sort((a, b) => {
+			if (a.data.position.y <= b.data.position.y) {
+				return a.drawPriority - b.drawPriority;
+				
+			}
+
+			return b.data.position.y-a.data.position.y;
+			
+		});
 
 		callback();
 	}
@@ -206,24 +210,6 @@ class CourseViewer {
 	_loadTracks(callback) { callback(); }
 
 	_loadTiles(callback) {
-		/*
-		let seenTileIds = [];
-		let seenTilePositions = [];
-		for (const tile of this.courseData.tiles) {
-			if (!seenTileIds.includes(tile.id)) {
-				seenTileIds.push(tile.id);
-			}
-
-			if (!seenTilePositions.includes([tile.x, tile.y])) {
-				seenTilePositions.push([tile.x, tile.y]);
-			}
-		}
-
-		seenTileIds = seenTileIds.sort((a, b) => a-b);
-		console.log(seenTileIds);
-		console.log(seenTilePositions);
-		*/
-
 		for (const tile of this.courseData.tiles) {
 			tile.scene = this;
 			this.tiles.push(new Tile(tile));
@@ -239,7 +225,8 @@ class CourseViewer {
 		this._reset();
 
 		this.courseData = data;
-		this.canvas.height = (27) * this._canvasScaleRate;
+		//this.canvas.height = (27) * this._canvasScaleRate;
+		this.canvas.height = window.innerHeight;
 		this.canvas.width = ((this.courseData.goal_x + 95) / 10) * this._canvasScaleRate;
 
 		this.spriteSheetData = require(`../sprites/${this.courseData.style}/sprite_offsets.json`);
@@ -291,19 +278,21 @@ class CourseViewer {
 
 		// So I can see the canvas dimensions
 		this.ctx.fillStyle = 'blue';
-		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height + 1);
 
 
 		for (const object of this.objects) {
-			if (!object.loadSprite) {
-				object.draw();
+			if (object.loadSprite) {
+				if (!object.spriteLoaded) {
+					await object.loadSprite();
+				}
 			}
+			
+			object.draw();
 		}
 
 		for (const tile of this.tiles) {
-			if (!tile.loadSprite) {
-				tile.draw();
-			}
+			tile.draw();
 		}
 
 		// Add rest of render parts
@@ -323,6 +312,15 @@ class CourseViewer {
 			(this.canvas.height - this.courseData.goal_y),
 			1, 1
 		);
+
+		/*
+		this.ctx.font = '10px RoomBold';
+		this.ctx.fillStyle = 'black';
+		this.ctx.fillText(
+			this.courseData.title,
+			0, 0
+		);
+		*/
 	}
 }
 

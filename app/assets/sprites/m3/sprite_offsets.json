@@ -90,7 +90,7 @@
 				"height": 16
 			}
 		},
-		"semi_solid": {
+		"semi_solid_platform": {
 			"default": {
 				"top_left": {
 					"x": 120,
@@ -313,9 +313,107 @@
 					"height": 16
 				}
 			}
+		},
+		"slope": {
+			"steep": {
+				"right": {
+					"variation_1": {
+						"start": {
+							"x": 18,
+							"y": 205,
+							"width": 16,
+							"height": 16
+						},
+						"end": {
+							"x": 18,
+							"y": 205,
+							"width": 16,
+							"height": 16
+						},
+						"top": {
+							"x": 18,
+							"y": 409,
+							"width": 16,
+							"height": 16
+						},
+						"bottom": {
+							"x": 18,
+							"y": 426,
+							"width": 16,
+							"height": 16
+						}
+					}
+				}
+			},
+			"gentle": {
+				"right": {
+					"variation_1": {
+						"start": {
+							"x": 18,
+							"y": 205,
+							"width": 16,
+							"height": 16
+						},
+						"end": {
+							"x": 18,
+							"y": 205,
+							"width": 16,
+							"height": 16
+						},
+						"top": {
+							"x": 35,
+							"y": 477,
+							"width": 16,
+							"height": 16
+						},
+						"top_2": {
+							"x": 52,
+							"y": 477,
+							"width": 16,
+							"height": 16
+						},
+						"bottom": {
+							"x": 35,
+							"y": 494,
+							"width": 16,
+							"height": 16
+						},
+						"bottom_2": {
+							"x": 52,
+							"y": 494,
+							"width": 16,
+							"height": 16
+						}
+					}
+				}
+			}
 		}
 	},
 	"ground_tiles": {
+		"ground_0": {
+			"x": 137,
+			"y": 188,
+			"width": 16,
+			"height": 16
+		},
+		"ground_1": {
+			"x": 154,
+			"y": 188,
+			"width": 16,
+			"height": 16
+		},
+		"ground_2": {
+			"x": 171,
+			"y": 188,
+			"width": 16,
+			"height": 16
+		},
+		"ground_3": {
+			"x": 188,
+			"y": 188,
+			"width": 16,
+			"height": 16
+		},
 		"ground_8": {
 			"x": 18,
 			"y": 222,
@@ -449,6 +547,18 @@
 			"height": 16
 		},
 		"ground_44": {
+			"x": 137,
+			"y": 188,
+			"width": 16,
+			"height": 16
+		},
+		"ground_52": {
+			"x": 18,
+			"y": 205,
+			"width": 16,
+			"height": 16
+		},
+		"ground_58": {
 			"x": 137,
 			"y": 188,
 			"width": 16,

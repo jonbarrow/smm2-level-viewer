@@ -8,20 +8,19 @@ class SemisolidPlatform extends Terrain {
 
 		this.scene = this.data.scene;
 		this.spriteSheetThemeOffset = this.scene.spriteSheetThemeOffset;
-		this.spriteOffsets = this.scene.spriteSheetData.terrain.semi_solid;
+		this.spriteOffsets = this.scene.spriteSheetData.terrain.semi_solid_platform;
 
-		// I actually have no idea how the draw priority for semisolids works
-		// This is just a guess, and it sometimes works fine
 		if (this.data.flags & 0x40000) {
 			this.spriteOffsets = this.spriteOffsets.version_2;
-			//this.drawPriority = 3;
 		} else if(this.data.flags & 0x80000) {
 			this.spriteOffsets = this.spriteOffsets.version_3;
-			//this.drawPriority = 2;
 		} else {
 			this.spriteOffsets =  this.spriteOffsets.default;
-			//this.drawPriority = 1;
 		}
+
+		// Hack to fix draw order. Please, future self, find a better way
+		this.data.position.y_real = this.data.position.y;
+		this.data.position.y = (this.data.position.y + this.data.dimensions.height);
 	}
 
 	draw() {
@@ -75,7 +74,7 @@ class SemisolidPlatform extends Terrain {
 					offset.width,
 					offset.height,
 					this.data.position.x + x,
-					(this.scene.canvas.height - this.data.position.y) - y,
+					(this.scene.canvas.height - this.data.position.y_real) - y,
 					1, 1
 				);
 			}
