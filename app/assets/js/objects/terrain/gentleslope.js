@@ -56,34 +56,9 @@ class GentleSlope extends Terrain {
 				);
 			} else {
 				
-				offset = this.spriteOffsets.top;
-				offset2 = this.spriteOffsets.top_2;
-				this.canvasContext.drawImage(
-					this.scene.spriteSheet,
-					this.spriteSheetThemeOffset.x + offset.x,
-					this.spriteSheetThemeOffset.y + offset.y,
-					offset.width,
-					offset.height,
-					(this.data.position.x + w) - 1,
-					((this.scene.canvas.height - this.data.position.y) - yLevel),
-					1, 1
-				);
-
-				this.canvasContext.drawImage(
-					this.scene.spriteSheet,
-					this.spriteSheetThemeOffset.x + offset2.x,
-					this.spriteSheetThemeOffset.y + offset2.y,
-					offset2.width,
-					offset2.height,
-					this.data.position.x + w,
-					((this.scene.canvas.height - this.data.position.y) - yLevel),
-					1, 1
-				);
-
-
-
 				offset = this.spriteOffsets.bottom;
 				offset2 = this.spriteOffsets.bottom_2;
+
 				this.canvasContext.drawImage(
 					this.scene.spriteSheet,
 					this.spriteSheetThemeOffset.x + offset.x,
@@ -106,8 +81,32 @@ class GentleSlope extends Terrain {
 					1, 1
 				);
 
-
 				if (!(w % 2)) {
+					offset = this.spriteOffsets.top;
+					offset2 = this.spriteOffsets.top_2;
+					
+					this.canvasContext.drawImage(
+						this.scene.spriteSheet,
+						this.spriteSheetThemeOffset.x + offset.x,
+						this.spriteSheetThemeOffset.y + offset.y,
+						offset.width,
+						offset.height,
+						(this.data.position.x + w) - 1,
+						((this.scene.canvas.height - this.data.position.y) - yLevel),
+						1, 1
+					);
+
+					this.canvasContext.drawImage(
+						this.scene.spriteSheet,
+						this.spriteSheetThemeOffset.x + offset2.x,
+						this.spriteSheetThemeOffset.y + offset2.y,
+						offset2.width,
+						offset2.height,
+						this.data.position.x + w,
+						((this.scene.canvas.height - this.data.position.y) - yLevel),
+						1, 1
+					);
+
 					yLevel--;
 				}
 			}
