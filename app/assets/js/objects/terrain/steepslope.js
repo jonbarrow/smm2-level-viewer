@@ -16,7 +16,7 @@ class SteepSlope extends Terrain {
 		if ((this.data.flags >> 20) & 1) {
 			this.spriteOffsets = this.spriteOffsets.right.variation_1;
 		} else {
-			this.spriteOffsets = this.spriteOffsets.left.variation_1;
+			this.spriteOffsets = this.spriteOffsets.right.variation_1;
 		}
 	}
 

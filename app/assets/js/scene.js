@@ -47,15 +47,14 @@ class CourseViewer {
 
 		this.ctx.imageSmoothingEnabled = false;
 
+		this.backgroundImage = new Image();
+
 		this.spriteSheet = new Image();
-		this.terrainSpriteSheet = new Image();
-		this.enemySpriteSheet = new Image();
-		this.objectSpriteSheet = new Image();
 		this.spriteSheetData;
 
-		this._minScaleLevel = 1;
-		this._maxScaleLevel = 10;
 		this._scaleLevel = 1;
+		this._minScaleLevel = 1;
+		this._maxScaleLevel = 5;
 		this._scaleRate = 1.1;
 		this._canvasScaleRate = 15;
 
@@ -66,19 +65,14 @@ class CourseViewer {
 
 	// With help from http://phrogz.net/tmp/canvas_zoom_to_cursor.html
 	_setupMouseControls() {
-		this._mouseClicked = false;
-		this.lastX = this.canvas.width / 2;
-		this.lastY = this.canvas.height / 2;
-		this.dragStart;
-
 		trackTransforms(this.ctx);
 
 		this.canvas.addEventListener('mousedown', event => {
 			this._mouseClicked = true;
 
-			this.lastX = event.offsetX || (event.pageX - this.canvas.offsetLeft);
-			this.lastY = event.offsetY || (event.pageY - this.canvas.offsetTop);
-			this.dragStart = this.ctx.transformedPoint(this.lastX, this.lastY);
+			this.mouseLastX = event.offsetX || (event.pageX - this.canvas.offsetLeft);
+			this.mouseLastY = event.offsetY || (event.pageY - this.canvas.offsetTop);
+			this.dragStart = this.ctx.transformedPoint(this.mouseLastX, this.mouseLastY);
 		});
 
 		this.canvas.addEventListener('mouseup', () => {
@@ -86,15 +80,19 @@ class CourseViewer {
 		});
 
 		this.canvas.addEventListener('mousemove', event => {
-			this.lastX = event.offsetX || (event.pageX - this.canvas.offsetLeft);
-			this.lastY = event.offsetY || (event.pageY - this.canvas.offsetTop);
+			this.mouseLastX = event.offsetX || (event.pageX - this.canvas.offsetLeft);
+			this.mouseLastY = event.offsetY || (event.pageY - this.canvas.offsetTop);
 
 			if (!this._mouseClicked) {
 				return;
 			}
 
-			const point = this.ctx.transformedPoint(this.lastX, this.lastY);
+			const point = this.ctx.transformedPoint(this.mouseLastX, this.mouseLastY);
 			this.ctx.translate(point.x-this.dragStart.x, point.y-this.dragStart.y);
+
+			// This makes a weird parallax
+			//this.boundLastX += (point.x-this.dragStart.x);
+			//this.boundLastY += (point.y-this.dragStart.y);
 
 			this.clear();
 			this.render();
@@ -102,8 +100,13 @@ class CourseViewer {
 
 		this.canvas.addEventListener('mousewheel', event => {
 			const delta = event.wheelDelta ? event.wheelDelta / 40 : event.detail ? -event.detail : 0;
+			if ((delta < 0 && this._scaleLevel <= this._minScaleLevel) || (delta > 0 && this._scaleLevel >= this._maxScaleLevel)) {
+				return;
+			}
 
-			const point = this.ctx.transformedPoint(this.lastX, this.lastY);
+			this._scaleLevel += (delta < 0 ? -1 : 1);
+
+			const point = this.ctx.transformedPoint(this.mouseLastX, this.mouseLastY);
 			const factor = Math.pow(this._scaleRate, delta);
 
 			this.ctx.translate(point.x, point.y);
@@ -117,8 +120,8 @@ class CourseViewer {
 
 	_reset() {
 		this._mouseClicked = false;
-		this.lastX = this.canvas.width / 2;
-		this.lastY = this.canvas.height / 2;
+		this.mouseLastX = this.canvas.width / 2;
+		this.mouseLastY = this.canvas.height / 2;
 		this.dragStart = null;
 
 		this.courseData = null;
@@ -222,7 +225,6 @@ class CourseViewer {
 
 	_loadRails(callback) {
 		for (const rail of this.courseData.rails) {
-			console.log(rail);
 			rail.scene = this;
 			this.rails.push(new Rail(rail));
 		}
@@ -240,17 +242,23 @@ class CourseViewer {
 		this.canvas.height = window.innerHeight;
 		this.canvas.width = ((this.courseData.goal_x + 95) / 10) * this._canvasScaleRate;
 
+		this.boundLastY = this.canvas.height - 27; // Top bounding box of the course
+		this.boundLastX = 0; // Left bounding box of the course
+
+		await new Promise(resolve => {
+			this.backgroundImage.src = `./assets/sprites/${this.courseData.style}/background.png`;
+			this.backgroundImage.addEventListener('load', resolve);
+		});
+
 		this.spriteSheetData = require(`../sprites/${this.courseData.style}/sprite_offsets.json`);
 		this.spriteSheetThemeOffset = this.spriteSheetData.theme_chunk_offsets[TIMES[this.courseData.time_of_day]][THEMES[this.courseData.theme]];
 
 		await new Promise(resolve => {
 			this.spriteSheet.src = `./assets/sprites/${this.courseData.style}/spritesheet.png`;
-			this.spriteSheet.addEventListener('load', () => {
-				resolve();
-			});
+			this.spriteSheet.addEventListener('load', resolve);
 		});
 		
-		const point = this.ctx.transformedPoint(0, (this.canvas.height));
+		const point = this.ctx.transformedPoint(0, this.canvas.height);
 		const factor = Math.pow(this._scaleRate, (3.75 * 10));
 
 		this.ctx.translate(point.x, point.y);
@@ -287,9 +295,12 @@ class CourseViewer {
 	async render() {
 		this.clear();
 
-		// So I can see the canvas dimensions
-		this.ctx.fillStyle = 'blue';
-		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height + 1);
+		this.ctx.imageSmoothingEnabled = false;
+
+		const numImages = Math.ceil(((this.courseData.goal_x + 95) / 10) / 27);
+		for (let i = 0; i < numImages; i++) {
+			this.ctx.drawImage(this.backgroundImage, i * 27, (this.canvas.height - 26), 27, 27);
+		}
 
 		for (const rail of this.rails) {
 			rail.draw();
@@ -320,15 +331,6 @@ class CourseViewer {
 			(this.canvas.height - this.courseData.goal_y),
 			1, 1
 		);
-
-		/*
-		this.ctx.font = '10px RoomBold';
-		this.ctx.fillStyle = 'black';
-		this.ctx.fillText(
-			this.courseData.title,
-			0, 0
-		);
-		*/
 	}
 }
 

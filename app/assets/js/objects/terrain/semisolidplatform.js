@@ -28,7 +28,7 @@ class SemisolidPlatform extends Terrain {
 			for (let y = 0; y < this.data.dimensions.height; y++) {
 				let offset;
 
-				// The "top" and "bottom" positions are "reversed" because HTML5 vanvas grid origin is opposite of SMM2 origin
+				// The "top" and "bottom" positions are "reversed" because HTML5 canvas grid origin is opposite of SMM2 origin
 				if (x === 0) {
 					if (y === 0) {
 						offset =  this.spriteOffsets.bottom_left;
