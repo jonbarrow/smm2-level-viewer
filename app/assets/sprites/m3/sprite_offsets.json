@@ -664,7 +664,7 @@
 	"enemies": {
 		"angry_sun": {
 			"x": 1,
-			"y": 3126,
+			"y": 3125,
 			"width": 32,
 			"height": 32
 		}

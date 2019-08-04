@@ -1,5 +1,7 @@
 A very barebones course viewer for Super Mario Maker 2
 
+![preview](https://i.imgur.com/wmaogZp.gif)
+
 ## Progress
 
 ### Styles/Themes
